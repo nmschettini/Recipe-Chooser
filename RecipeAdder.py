@@ -1,6 +1,19 @@
-import json, statistics,re
+import json, statistics
 
 numPeople = 5
+    
+def readRecipes(fileloc: str) -> dict:
+    try:
+        with open(fileloc, "r") as file:
+           return json.load(file)
+    except:
+        return {}
+    
+def writeRecipes(fileloc: str, recipes: dict) -> None:
+    with open(fileloc, "w") as file:
+        file.write(json.dumps(recipes))
+
+recipes = readRecipes("recipes.json")
 
 def addRecipe():
     cont = True
@@ -17,22 +30,18 @@ def addRecipe():
         print("Recipe Added")
         
         cont_ans = input("\nContinue? (y/n): ")
+        print()
         if cont_ans != "y":
             cont = False
 
 
 def saveRecipe(name: str, location: str, ratings: list[float]) -> None:
-    recipe = {
-        "Name": name,
+    recipes[name] = {
         "Location": location,
-        "Rating": statistics.mean(ratings)
+        "Rating": statistics.mean(ratings),
     }
-
-    recipe_json = json.dumps(recipe)
-
-    with open(f"./Recipes/{re.sub('[^A-Za-z0-9]+', '', name)}.json", "w") as file:
-        file.write(recipe_json)
 
 
 if __name__ == "__main__":
     addRecipe()
+    writeRecipes("recipes.json", recipes)
